@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Jobs\ConvertCelsius;
 use App\Jobs\FindMaxPrime;
+use App\Jobs\MakeSum;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +37,14 @@ Route::get('/notifications', function(){
     foreach($user->unreadNotifications as $notif){
         echo '<h3>' . $notif->data['description'] .  '</h3>';
     }
+});
+
+Route::get('/sum/{num1}/{num2}', function ($num1, $num2){
+    MakeSum::dispatch($num1, $num2);
+    return 'A soma será realizado em fila.';
+});
+
+Route::get('/celsius/{farenheit}', function ($farenheit){
+    ConvertCelsius::dispatch($farenheit);
+    return 'A conversão será realizado em fila.';
 });
