@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\PostController;
+use App\Jobs\FindMaxPrime;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +24,15 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('dashboard', function () {
     return view('dashboard');
 })->name('dashboard')->middleware('auth');
+
+Route::get('/primo/{limit}', function ($limit){
+    FindMaxPrime::dispatch($limit, auth()->id());
+    return 'O cálculo será realizado em fila.';
+});
+
+Route::get('/notifications', function(){
+    $user = auth()->user();
+    foreach($user->unreadNotifications as $notif){
+        echo '<h3>' . $notif->data['description'] .  '</h3>';
+    }
+});
